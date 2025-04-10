@@ -1,3 +1,10 @@
+{% extends "base.jinja" %}
+
+{% block title %}
+    Słownik Upraw
+{% endblock %}
+
+{% block content %}
 <div class="grid grid-cols-5 gap-6 w-full h-fit overflow-y-auto">
     <div class="w-full flex-1 shrink-1 bg-gray-100 rounded-2xl p-2 inset-shadow-clay-gray">
         Search
@@ -45,5 +52,5 @@
         {% endfor %}
     </div>
 </div>
-
+{% endblock %}
 

@@ -13,7 +13,7 @@ bg-[url('../static/apple-trees.jpeg')]
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Słownik Upraw</title>
+    <title>{% block title %}Słownik Upraw{% endblock %}</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="{{ url_for('static', file_path='styles.css') }}">
 </head>
@@ -21,13 +21,14 @@ bg-[url('../static/apple-trees.jpeg')]
 <script src="{{ url_for('static', file_path='htmx_2_0_4.min.js') }}"></script>
 <script src="{{ url_for('static', file_path='collapsible.js') }}"></script>
 <nav class="w-full max-w-7xl bg-gray-100 flex justify-center items-center gap-8 p-1 mt-2 rounded-3xl backdrop-blur-xs inset-shadow-clay-gray">
-    <a class="text-green-950 text-lg px-2 py-1 cursor-pointer" hx-get="/slownik" hx-target="#main-app">Słownik Upraw</a>
-    <a class="text-green-950 text-lg px-2 py-1 cursor-pointer" hx-get="/jak-to-dziala" hx-target="#main-app">Jak To Działa</a>
-    <a class="text-green-950 text-lg px-2 py-1 cursor-pointer" hx-get="/api" hx-target="#main-app">API</a>
+    <a class="text-green-950 text-lg px-2 py-1 cursor-pointer" href="/">Słownik Upraw</a>
+    <a class="text-green-950 text-lg px-2 py-1 cursor-pointer" href="/jak-to-dziala">Jak To Działa</a>
+    <a class="text-green-950 text-lg px-2 py-1 cursor-pointer" href="/api">API</a>
 </nav>
 
 <main class="max-w-7xl w-full grow p-8 my-4 bg-quinary-400 rounded-3xl backdrop-blur-xs inset-shadow-clay-green">
-    {% include 'slownik.jinja' %}
+    {% block content %}
+    {% endblock %}
 </main>
 
 <footer class="w-full p-2 mb-2 max-w-7xl text-center bg-tertiary-400 rounded-3xl backdrop-blur-xs text-s inset-shadow-clay-brown-regular">

@@ -6,17 +6,19 @@
 
 {% block content %}
 <div class="grid grid-cols-5 gap-6 w-full h-fit overflow-y-auto">
-    <div class="w-full flex-1 shrink-1 bg-gray-100 rounded-2xl p-2 inset-shadow-clay-gray">
-        Search
+    <div class="flex w-full flex-1 shrink-1 bg-gray-100 rounded-2xl inset-shadow-clay-gray">
+        <div class="py-2 pl-2">
+            Search
+        </div>   
     </div>
     <div class="flex flex-col gap-y-4 col-span-4 shrink-4 rounded-2xl ">
         {% for kategoria in kategorie %}
             <div class="flex flex-col p-2 gap-4 bg-gray-100 rounded-2xl inset-shadow-clay-gray">
-                <div class="text-xl cursor-pointer" onclick="toggle_collapse(this)">📁 {{ kategoria.Nazwa }}</div>
+                <div class="text-xl cursor-pointer" onclick="toggleCollapse(this)">📁 {{ kategoria.Nazwa }}</div>
                 <div class="max-h-0 hidden flex flex-col gap-y-2">
                     {% for gatunek in kategoria.Gatunki %}
                         <div class="flex flex-col ml-4 px-2 pb-3 pt-1 inset-shadow-clay-gray-dark bg-gray-200 backdrop-blur-xs rounded-2xl">
-                            <div class="text-xl cursor-pointer" onclick="toggle_collapse(this)">📁 {{ gatunek.Nazwa }}</div>
+                            <div class="text-xl cursor-pointer" onclick="toggleCollapse(this)">📁 {{ gatunek.Nazwa }}</div>
                             <div class="max-h-0 hidden">
                                 <div class="overflow-x-auto py-2">
                                     <table class="table-auto ml-4 text-nowrap border-collapse">

@@ -15,11 +15,13 @@ bg-[url('../static/apple-trees.jpeg')]
     <meta charset="UTF-8">
     <title>{% block title %}Słownik Upraw{% endblock %}</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/x-icon" href="{{ url_for('static', file_path='pics/icon.png') }}">
     <link rel="stylesheet" href="{{ url_for('static', file_path='styles.css') }}">
 </head>
-<body class="h-screen max-w-screen flex flex-col items-center bg-[url('../static/apple-trees.jpeg')] bg-fixed bg-cover bg-center font-[Quicksand-Regular]">
+<body class="h-screen max-w-screen flex flex-col items-center bg-[url('../static/pics/apple-trees.jpeg')] bg-fixed bg-cover bg-center font-[Quicksand-Regular]">
 <script src="{{ url_for('static', file_path='htmx_2_0_4.min.js') }}"></script>
 <script src="{{ url_for('static', file_path='collapsible.js') }}"></script>
+
 <nav class="w-full max-w-7xl bg-gray-100 flex justify-center items-center gap-8 p-1 mt-2 rounded-3xl backdrop-blur-xs inset-shadow-clay-gray">
     <a class="text-green-950 text-lg px-2 py-1 cursor-pointer" href="/">Słownik Upraw</a>
     <a class="text-green-950 text-lg px-2 py-1 cursor-pointer" href="/jak-to-dziala">Jak To Działa</a>

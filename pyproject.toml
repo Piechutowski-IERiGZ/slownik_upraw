@@ -1,0 +1,14 @@
+[project]
+name = "slownik-upraw"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.13.2"
+dependencies = [
+    "litestar[standard]>=2.15.1",
+    "wtforms>=3.2.1",
+]
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["slownik_upraw"]

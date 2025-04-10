@@ -1,0 +1,49 @@
+<div class="grid grid-cols-5 gap-6 w-full h-fit overflow-y-auto">
+    <div class="w-full flex-1 shrink-1 bg-gray-100 rounded-2xl p-2 inset-shadow-clay-gray">
+        Search
+    </div>
+    <div class="flex flex-col gap-y-4 col-span-4 shrink-4 rounded-2xl ">
+        {% for kategoria in kategorie %}
+            <div class="flex flex-col p-2 gap-4 bg-gray-100 rounded-2xl inset-shadow-clay-gray">
+                <div class="text-xl cursor-pointer" onclick="toggle_collapse(this)">📁 {{ kategoria.Nazwa }}</div>
+                <div class="max-h-0 hidden flex flex-col gap-y-2">
+                    {% for gatunek in kategoria.Gatunki %}
+                        <div class="flex flex-col ml-4 px-2 pb-3 pt-1 inset-shadow-clay-gray-dark bg-gray-200 backdrop-blur-xs rounded-2xl">
+                            <div class="text-xl cursor-pointer" onclick="toggle_collapse(this)">📁 {{ gatunek.Nazwa }}</div>
+                            <div class="max-h-0 hidden">
+                                <div class="overflow-x-auto py-2">
+                                    <table class="table-auto ml-4 text-nowrap border-collapse">
+                                        <tr class="">
+                                            <th class="text-left px-3 py-1">IdUprawy</th>
+                                            <th class="text-left px-3">Nazwa</th>
+                                            <th class="text-left px-3">NazwaLacinkska</th>
+                                            <th class="text-left px-3">Opis</th>
+                                            <th class="text-left px-3">IdUprawy</th>
+                                            <th class="text-left px-3">Nazwa</th>
+                                            <th class="text-left px-3">NazwaLacinkska</th>
+                                            <th class="text-left px-3">Opis</th>
+                                        </tr>
+                                        {% for uprawa in gatunek.Uprawy %}
+                                            <tr class="even:bg-gray-100">
+                                                <td class="px-3 py-1">{{ uprawa.IdUPrawy }}</td>
+                                                <td class="px-3">{{ uprawa.Nazwa }}</td>
+                                                <td class="px-3">{{ uprawa.NazwaLacinska }}</td>
+                                                <td class="px-3">{{ uprawa.Opis }}</td>
+                                                <td class="px-3">{{ uprawa.IdUPrawy }}</td>
+                                                <td class="px-3">{{ uprawa.Nazwa }}</td>
+                                                <td class="px-3">{{ uprawa.NazwaLacinska }}</td>
+                                                <td class="px-3">{{ uprawa.Opis }}</td>
+                                            </tr>
+                                        {% endfor %}
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+
+

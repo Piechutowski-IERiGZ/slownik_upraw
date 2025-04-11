@@ -1,0 +1,57 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+	  {
+		"type": "typescript",
+		"tsconfig": "tsconfig.json",
+		"option": "watch",
+		"problemMatcher": [
+		  "$tsc-watch"
+		],
+		"group": {
+		  "kind": "build",
+		  "isDefault": true
+		},
+		"label": "tsc: watch - tsconfig.json",
+		"runOptions": {
+		  "runOn": "folderOpen"
+		}
+	  },
+	  {
+		"type": "shell",
+		"label": "Tailwind",
+		"command": "tailwind",
+		"args": [
+		  "-i",
+		  "static/input.css",
+		  "-o",
+		  "static/styles.css",
+		  "-w"
+		],
+		"group": {
+		  "kind": "build",
+		  "isDefault": false
+		},
+		"runOptions": {
+		  "runOn": "folderOpen"
+		}
+	  },
+	  {
+		"type": "shell",
+		"label": "Litestar",
+		"command": "sh",
+		"args": [
+		  "-c",
+		  "cd slownik_upraw && uv run uvicorn app:app --reload"
+		],
+		"group": {
+		  "kind": "build",
+		  "isDefault": false
+		},
+		"runOptions": {
+		  "runOn": "folderOpen"
+		}
+	  }
+	]
+  }
+  

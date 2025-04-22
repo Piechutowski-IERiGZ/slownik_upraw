@@ -24,7 +24,7 @@ def load_data():
         "Uprawa",
     ]
     for name in file_names:
-        with open(Path(__name__).resolve().parent.parent / ('CSV/' + name + ".csv"), encoding="utf-8") as file:
+        with open(Path(__file__).parent.parent / ('CSV/' + name + ".csv"), encoding="utf-8") as file:
             data = reader(file, delimiter=";")
             headers = next(data)
             sql = f"insert into {name} ({",".join(headers)}) values ({",".join('?' for _ in headers)})"

@@ -1,8 +1,6 @@
 version: '3.8'
 services:
-  caddy:
+  app:
     build: .
     ports:
       - "80:80"
-    volumes:
-      - ./Caddyfile:/etc/caddy/Caddyfile

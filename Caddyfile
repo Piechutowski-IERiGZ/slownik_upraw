@@ -1,0 +1,6 @@
+:80 {
+root * /app/app/static
+file_server
+reverse_proxy /api/* localhost:8000
+try_files {path} /index.html
+}

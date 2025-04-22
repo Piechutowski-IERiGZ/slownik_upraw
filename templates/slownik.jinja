@@ -8,7 +8,29 @@
 <div class="grid grid-cols-5 gap-3 w-full h-fit overflow-y-auto">
     <div class="flex w-full flex-1 shrink-1 bg-gray-100 rounded-2xl inset-shadow-clay-gray">
         <div class="py-2 pl-2">
-            Search
+            <div class="text-lg">Search</div>
+            <form method="get">
+                <div>{{ form.NazwaUprawa.label }}{{ form.NazwaUprawa }}</div>
+                <div>{{ form.NazwaLacinskaUprawa.label }}{{ form.NazwaLacinskaUprawa }}</div>
+                <div>{{ form.NazwaSynonimyUprawa.label }}{{ form.NazwaSynonimyUprawa }}</div>
+                <div>{{ form.OpisUprawa.label }}{{ form.OpisUprawa }}</div>
+                <div>{{ form.UwagaUprawa.label }}{{ form.UwagaUprawa }}</div>  
+                <div>{{ form.ProduktRolny.label }}{{ form.ProduktRolny }}</div>
+                <div>{{ form.UprawaMiododajna.label }}{{ form.UprawaMiododajna }}</div>
+                <div>{{ form.UprawaEkologiczna.label }}{{ form.UprawaEkologiczna }}</div>
+                <div>{{ form.UprawaEnergetyczna.label }}{{ form.UprawaEnergetyczna }}</div>
+                <div>{{ form.UprawaOgrodnicza.label }}{{ form.UprawaOgrodnicza }}</div>
+                <div>{{ form.DostawyBezposrednie.label }}{{ form.DostawyBezposrednie }}</div>
+                <div>{{ form.RolniczyHandelDetaliczny.label }}{{ form.RolniczyHandelDetaliczny }}</div>
+                <div>{{ form.DzialSpecjalny.label }}{{ form.DzialSpecjalny }}</div>
+                <div>{{ form.OkrywaZimowa.label }}{{ form.OkrywaZimowa }}</div>
+                <div>{{ form.Warzywo.label }}{{ form.Warzywo }}</div>
+                <div>{{ form.WarzywoOwocKwiatZiolo.label }}{{ form.WarzywoOwocKwiatZiolo }}</div>
+                <div>
+                    <button formaction="/download-form">Pobierz ⬇️</button>
+                    <button formaction="/">Szukaj 🔍</button>
+                </div>
+            </form>
         </div>   
     </div>
     <div class="flex flex-col gap-2 col-span-4 shrink-4 rounded-2xl ">

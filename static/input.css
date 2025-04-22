@@ -24,6 +24,17 @@ Red button - e3474a
 
 @import "tailwindcss";
 
+@layer utilities {
+  .custom-hidden-scroll {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .custom-hidden-scroll::-webkit-scrollbar {
+    display: none;
+  }
+}
+
 @theme {
     --color-primary-100: rgba(127, 239, 117, 1);
     --color-primary-200: rgba(102, 196, 94, 1);

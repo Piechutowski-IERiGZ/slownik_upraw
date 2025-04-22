@@ -1,18 +1,23 @@
-import itertools as it
+import io
 import sqlite3 as s3
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Sequence
+from csv import writer
 
+from openpyxl import Workbook
+from openpyxl.worksheet.worksheet import Worksheet
 
-from litestar import Litestar, MediaType, get
+from wtforms import Form, BooleanField, StringField
+
+from litestar import Litestar, MediaType, Response, get
 from litestar.types import ControllerRouterHandler
 from litestar.contrib.jinja import JinjaTemplateEngine
 from litestar.static_files import create_static_files_router
 from litestar.template import TemplateConfig
-from litestar.response import Template
+from litestar.response import Template, File
 
-from slownik_upraw.db import run_fixture, connection, close_connection
+from slownik_upraw.db import connection, close_connection, build_schema, load_data
 
 
 HTML_MEDIA: str = MediaType.HTML
@@ -62,9 +67,84 @@ for x in range(1, 4):
     ))
 
 
+
+class UprawaForm(Form):
+    NazwaUprawa = StringField("Nazwa Uprawy")
+    NazwaLacinskaUprawa = StringField("Nazwa Łacińska Uprawy")
+    NazwaSynonimyUprawa = StringField("Synonimy Nazwy Uprawy")
+    OpisUprawa = StringField("Opis Uprawy")
+    UwagaUprawa = StringField("Uwagi do Uprawy")
+    
+    ProduktRolny = BooleanField("Produkt Rolny")
+    UprawaMiododajna = BooleanField("Uprawa Miododajna")
+    UprawaEkologiczna = BooleanField("Uprawa Ekologiczna")
+    UprawaEnergetyczna = BooleanField("Uprawa Energetyczna")
+    UprawaOgrodnicza = BooleanField("Uprawa Ogrodnicza")
+    DostawyBezposrednie = BooleanField("Dostawy Bezpośrednie")
+    RolniczyHandelDetaliczny = BooleanField("Rolniczy Handel Detaliczny")
+    DzialSpecjalny = BooleanField("Dział Specjalny Produkcji Rolnej")
+    OkrywaZimowa = BooleanField("Okrywa Zimowa")
+    Warzywo = BooleanField("Warzywo")
+    WarzywoOwocKwiatZiolo = BooleanField("Warzywo/Owoc/Kwiat/Zioło")
+
+
+
+
 @get("/")
 async def index() -> Template:
-    return Template(template_name="slownik.jinja", context={"kategorie": lista_kategorii}, media_type=HTML_MEDIA)
+    form = UprawaForm()
+    return Template(
+        template_name="slownik.jinja", 
+        context={
+            "kategorie": lista_kategorii,
+            "form": form,
+        }, 
+        media_type=HTML_MEDIA,
+    )
+
+
+@get("/download-form")
+async def download_form() -> File:
+    data = [
+        ["Name", "Age", "City"],
+        ["Alice", 30, "New York"],
+        ["Bob", 25, "London"],
+        ["Charlie", 35, "Paris"]
+    ]
+
+    output = io.StringIO()
+    new_file = writer(output)
+    new_file.writerows(data)
+    output.seek(0)
+    bytes_buffer = io.BytesIO(output.getvalue().encode("utf-8"))
+
+    return File( 
+        content_disposition_type="inline",
+        filename="file.csv"
+    )
+
+
+@get("/slownik-upraw-xlsx",
+    response_headers={
+        "content-disposition": 'attachment; filename="Uprawy.xlsx"',
+    },
+    media_type="text/xlsx",
+)
+async def slownik_upraw_xlsx(conn: s3.Connection) -> bytes:
+    values = conn.execute("select * from Uprawa").fetchall()
+    headers = conn.execute("PRAGMA table_info(Uprawa);").fetchall()
+    wb = Workbook()
+    ws: Worksheet = wb['Sheet']
+    ws.title = "Uprawy"
+    ws.append(header[1] for header in headers)
+    for value in values:
+        ws.append(value)
+
+    excel_bytes = io.BytesIO()
+    wb.save(excel_bytes)
+    excel_bytes.seek(0)
+    return excel_bytes.getvalue()
+
 
 
 @get("/jak-to-dziala")
@@ -77,6 +157,11 @@ async def slownik() -> Template:
     return Template(template_name="api.jinja", media_type=HTML_MEDIA)
 
 
+@get("/test")
+async def testing(conn: s3.Connection) -> str:
+    return str(conn.execute("select * from Klasa").fetchall())
+
+
 
 template_config = TemplateConfig(
     directory=Path(__file__).resolve().parent.parent / "templates",
@@ -84,8 +169,9 @@ template_config = TemplateConfig(
 )
 
 route_handlers: Sequence[ControllerRouterHandler] = [
-    index, jak_to_dziala, slownik,
-    create_static_files_router(directories=[Path(__file__).resolve().parent.parent / "static"], path="/static")
+    index, jak_to_dziala, slownik, testing, download_form,
+    slownik_upraw_xlsx,  
+    create_static_files_router(directories=[Path(__file__).resolve().parent.parent / "static"], path="/static"),
 ]
 
 app = Litestar(
@@ -94,7 +180,7 @@ app = Litestar(
     debug=True,
     plugins=[],
     dependencies={"conn": connection},
-    on_startup=[run_fixture],
+    on_startup=[build_schema, load_data],
     on_shutdown=[close_connection],
 )
 

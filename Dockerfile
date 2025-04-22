@@ -3,6 +3,17 @@ FROM python:3.13-alpine
 # Install necessary tools
 RUN apk add --no-cache git curl build-base tree
 
+# Install Rust using rustup
+# Setting environment variables for Rust paths
+ENV RUSTUP_HOME=/usr/local/rustup \
+    CARGO_HOME=/usr/local/cargo \
+    PATH=/usr/local/cargo/bin:$PATH
+
+# Download and install Rust. -y answers yes to prompts.
+# --no-modify-path is important in Docker so it doesn't try to modify shell profiles.
+# We add cargo's bin directory to PATH manually via the ENV instruction above.
+RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y --no-modify-path
+
 # Install uv
 RUN pip install --no-cache-dir uv
 

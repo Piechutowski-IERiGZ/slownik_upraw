@@ -69,6 +69,9 @@ for x in range(1, 4):
 
 
 class UprawaForm(Form):
+    IdUprawa = StringField("Id Uprawy")
+    IdPodKategoria = StringField("Id Pod Kategorii")
+
     NazwaUprawa = StringField("Nazwa Uprawy")
     NazwaLacinskaUprawa = StringField("Nazwa Łacińska Uprawy")
     NazwaSynonimyUprawa = StringField("Synonimy Nazwy Uprawy")
@@ -104,7 +107,7 @@ async def index() -> Template:
 
 
 @get("/download-form")
-async def download_form() -> File:
+async def download_form() -> Response[bytes]:
     data = [
         ["Name", "Age", "City"],
         ["Alice", 30, "New York"],
@@ -117,33 +120,8 @@ async def download_form() -> File:
     new_file.writerows(data)
     output.seek(0)
     bytes_buffer = io.BytesIO(output.getvalue().encode("utf-8"))
+    return bytes_buffer
 
-    return File( 
-        content_disposition_type="inline",
-        filename="file.csv"
-    )
-
-
-@get("/slownik-upraw-xlsx",
-    response_headers={
-        "content-disposition": 'attachment; filename="Uprawy.xlsx"',
-    },
-    media_type="text/xlsx",
-)
-async def slownik_upraw_xlsx(conn: s3.Connection) -> bytes:
-    values = conn.execute("select * from Uprawa").fetchall()
-    headers = conn.execute("PRAGMA table_info(Uprawa);").fetchall()
-    wb = Workbook()
-    ws: Worksheet = wb['Sheet']
-    ws.title = "Uprawy"
-    ws.append(header[1] for header in headers)
-    for value in values:
-        ws.append(value)
-
-    excel_bytes = io.BytesIO()
-    wb.save(excel_bytes)
-    excel_bytes.seek(0)
-    return excel_bytes.getvalue()
 
 
 
@@ -157,20 +135,16 @@ async def slownik() -> Template:
     return Template(template_name="api.jinja", media_type=HTML_MEDIA)
 
 
-@get("/test")
-async def testing(conn: s3.Connection) -> str:
-    return str(conn.execute("select * from Klasa").fetchall())
-
-
-
 template_config = TemplateConfig(
     directory=Path(__file__).resolve().parent.parent / "templates",
     engine=JinjaTemplateEngine,
 )
 
 route_handlers: Sequence[ControllerRouterHandler] = [
-    index, jak_to_dziala, slownik, testing, download_form,
-    slownik_upraw_xlsx,  
+    index, 
+    jak_to_dziala, 
+    slownik, 
+    download_form,  
     create_static_files_router(directories=[Path(__file__).resolve().parent.parent / "static"], path="/static"),
 ]
 

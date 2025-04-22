@@ -10,7 +10,7 @@ _connection = s3.connect(":memory:")
 
 
 def build_schema():
-    with open(Path(__name__).resolve().parent.parent / "SQL/build_tables.sql") as file:
+    with open(Path(__file__).parent.parent / "SQL/build_tables.sql") as file:
         _connection.executescript(file.read())
 
 

@@ -1,7 +1,7 @@
 FROM python:3.13-alpine
 
 # Install necessary tools
-RUN apk add --no-cache git curl build-base
+RUN apk add --no-cache git curl build-base tree
 
 # Install uv
 RUN pip install --no-cache-dir uv
@@ -12,10 +12,10 @@ WORKDIR /app
 # Clone the main app repository
 RUN git clone https://github.com/Piechutowski-IERiGZ/slownik_upraw.git .
 
-# Clone the data repo and move CSV files into expected location
+# Clone the data repo and move CSV files directly to /app/CSV
 RUN git clone https://github.com/Piechutowski-IERiGZ/slownik_upraw_data.git /tmp/data && \
-    mkdir -p /app/slownik_upraw/CSV && \
-    mv /tmp/data/*.csv /app/slownik_upraw/CSV && \
+    mkdir -p /app/CSV && \
+    mv /tmp/data/*.csv /app/CSV && \
     rm -rf /tmp/data
 
 # Install dependencies

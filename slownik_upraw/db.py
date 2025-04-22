@@ -10,7 +10,8 @@ _connection = s3.connect(":memory:")
 
 
 def build_schema():
-    with open(Path(__file__).parent.parent / "SQL/build_tables.sql") as file:
+    sql_path = Path(__file__).parent.parent / "SQL/build_tables.sql"
+    with open(sql_path, 'r', encoding="utf-8") as file:
         _connection.executescript(file.read())
 
 
@@ -24,7 +25,8 @@ def load_data():
         "Uprawa",
     ]
     for name in file_names:
-        with open(Path(__file__).parent.parent / ('CSV/' + name + ".csv"), encoding="utf-8") as file:
+        csv_path = Path(__file__).parent.parent / 'CSV' / f"{name}.csv"
+        with open(csv_path, 'r', encoding="utf-8") as file:
             data = reader(file, delimiter=";")
             headers = next(data)
             sql = f"insert into {name} ({",".join(headers)}) values ({",".join('?' for _ in headers)})"

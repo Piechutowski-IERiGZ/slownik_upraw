@@ -42,7 +42,23 @@
 		"command": "sh",
 		"args": [
 		  "-c",
-		  "cd slownik_upraw && uv run uvicorn app:app --reload"
+		  "cd slownik_upraw && uv run uvicorn app:app --host 0.0.0.0 --port 8000 --reload"
+		],
+		"group": {
+		  "kind": "build",
+		  "isDefault": false
+		},
+		"runOptions": {
+		  "runOn": "folderOpen"
+		}
+	  },
+	   {
+		"type": "shell",
+		"label": "NeoFetch",
+		"command": "sh",
+		"args": [
+		  	"-c",
+		  	"neofetch",
 		],
 		"group": {
 		  "kind": "build",

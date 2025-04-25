@@ -1,6 +1,6 @@
 import io
 import sqlite3 as s3
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Sequence
 from csv import writer
@@ -15,7 +15,7 @@ from litestar.types import ControllerRouterHandler
 from litestar.contrib.jinja import JinjaTemplateEngine
 from litestar.static_files import create_static_files_router
 from litestar.template import TemplateConfig
-from litestar.response import Template, File
+from litestar.response import Template
 
 from slownik_upraw.db import connection, close_connection, build_schema, load_data
 
@@ -24,47 +24,31 @@ HTML_MEDIA: str = MediaType.HTML
 
 
 @dataclass
-class Uprawa:
-    IdUPrawy: str
-    Nazwa: str
-    NazwaLacinska: str
-    Opis: str
-
-@dataclass
-class Gatunek:
-    IdGatunek: str
-    Nazwa: str
-    Uprawy: list[Uprawa]
-
-@dataclass
-class Kategoria:
-    IdKategoria: str
-    Nazwa: str
-    Gatunki: list[Gatunek]
+class Node:
+    nazwa: str
+    values: list = field(default_factory=list)
 
 
-lista_kategorii = []
-for x in range(1, 4):
-    lista_gatunek = []
-    for y in range(1, 5):
-        lista_upraw = []
-        for z in range(1, 6):
-            lista_upraw.append(Uprawa(
-                IdUPrawy=f"01.{x:02d}.{y:02d}.{z:02d}",
-                Nazwa=f"Uprawa 01.{x:02d}.{y:02d}.{z:02d}",
-                NazwaLacinska=f"Uprawa Latina 01.{x:02d}.{y:02d}.{z:02d}",
-                Opis="Lorem ipsum dolor sit amet consectetur adipiscing elit.",
-            ))
-        lista_gatunek.append(Gatunek(
-            IdGatunek=f"01.{x:02d}.{y:02d}",
-            Nazwa=f"Gatunek 01.{x:02d}.{y:02d}",
-            Uprawy=lista_upraw,
-        ))
-    lista_kategorii.append(Kategoria(
-        IdKategoria=f"01.{x:02d}",
-        Nazwa=f"Kategoria 01.{x:02d}",
-        Gatunki=lista_gatunek,
-    ))
+uprawa_headers = [
+    "Id Uprawy",
+    "Id Podkategorii",
+    "Nazwa Uprawy",
+    "Nazwa Łacińska Uprawy",
+    "Synonimy Nazwy Uprawy",
+    "Opis Uprawy",
+    "Uwagi do Uprawy",
+    "Produkt Rolny",
+    "Uprawa Miododajna",
+    "Uprawa Ekologiczna",
+    "Uprawa Energetyczna",
+    "Uprawa Ogrodnicza",
+    "Dostawy Bezpośrednie",
+    "Rolniczy Handel Detaliczny",
+    "Dział Specjalny Produkcji Rolnej",
+    "Okrywa Zimowa",
+    "Warzywo",
+    "Warzywo / Owoc / Kwiat / Zioło"
+]
 
 
 
@@ -91,15 +75,67 @@ class UprawaForm(Form):
     WarzywoOwocKwiatZiolo = BooleanField("Warzywo/Owoc/Kwiat/Zioło")
 
 
+@get("/test")
+async def test() -> Template:
+    return Template(
+        template_name="test.jinja",
+        media_type=HTML_MEDIA,
+    )
 
 
 @get("/")
-async def index() -> Template:
+async def index(conn: s3.Connection) -> Template:
     form = UprawaForm()
+    grupa: dict[str, Node] = {}
+    klasa: dict[str, Node] = {}
+    kategoria: dict[str, Node] = {}
+    podkategoria: dict[str, Node] = {}
+
+    res = conn.execute("""
+    SELECT
+    g.IdGrupa,
+    g.NazwaGrupa,
+    kla.IdKlasa,
+    kla.NazwaKlasa,
+    k.IdKategoria,
+    k.NazwaKategoria,
+    pk.IdPodKategoria,
+    pk.NazwaPodKategoria,
+    u.*
+    FROM
+        "Uprawa" AS u
+    JOIN
+        "PodKategoria" AS pk ON u."IdPodKategoria" = pk."IdPodKategoria"
+    JOIN
+        "Kategoria" AS k ON pk."IdKategoria" = k."IdKategoria"
+    JOIN
+        "Klasa" AS kla ON k."IdKlasa" = kla."IdKlasa"
+    JOIN
+        "Grupa" AS g ON kla."IdGrupa" = g."IdGrupa"              
+
+    """).fetchall()
+
+    for line in res:
+        if line[0] not in grupa:
+            grupa[line[0]] = Node(nazwa=line[1])    
+        if line[2] not in klasa:
+            klasa[line[2]] = Node(nazwa=line[3])
+            grupa[line[0]].values.append(klasa[line[2]])
+        if line[4] not in kategoria:
+            kategoria[line[4]] = Node(nazwa=line[5])
+            klasa[line[2]].values.append(kategoria[line[4]])
+        if line[6] not in podkategoria:
+            podkategoria[line[6]] = Node(nazwa=line[7])
+            kategoria[line[4]].values.append(podkategoria[line[6]])
+        podkategoria[line[6]].values.append(line[8:])
+    
+    # return str(list(grupa.values())[0].values[0].values[0].values[0].values[0])
+
     return Template(
         template_name="slownik.jinja", 
         context={
-            "kategorie": lista_kategorii,
+            "headers": uprawa_headers,
+            "grupy": grupa.values(),
             "form": form,
         }, 
         media_type=HTML_MEDIA,
@@ -123,8 +159,6 @@ async def download_form() -> Response[bytes]:
     return bytes_buffer
 
 
-
-
 @get("/jak-to-dziala")
 async def jak_to_dziala() -> Template:
     return Template(template_name="jak_to_dziala.jinja", media_type=HTML_MEDIA)
@@ -142,6 +176,7 @@ template_config = TemplateConfig(
 
 route_handlers: Sequence[ControllerRouterHandler] = [
     index, 
+    test,
     jak_to_dziala, 
     slownik, 
     download_form,  

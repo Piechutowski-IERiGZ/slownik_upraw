@@ -3,10 +3,12 @@ import sqlite3 as s3
 from csv import reader
 from pathlib import Path
 
+import polars as pl
 
 
 
-_connection = s3.connect(":memory:")
+
+_connection: s3.Connection = s3.connect(":memory:")
 
 
 def build_schema():
@@ -33,7 +35,6 @@ def load_data():
             _connection.executemany(sql, data)
 
     _connection.commit()
-
 
 
 async def connection() -> s3.Connection:

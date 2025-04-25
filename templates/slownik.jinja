@@ -6,75 +6,95 @@
 
 {% block content %}
 <div class="grid grid-cols-5 gap-3 w-full h-fit overflow-y-auto">
-    <div class="flex w-full flex-1 shrink-1 bg-gray-100 rounded-2xl inset-shadow-clay-gray">
-        <div class="py-2 pl-2">
-            <div class="text-lg">Search</div>
-            <form method="get">
-                <div>{{ form.NazwaUprawa.label }}{{ form.NazwaUprawa }}</div>
-                <div>{{ form.NazwaLacinskaUprawa.label }}{{ form.NazwaLacinskaUprawa }}</div>
-                <div>{{ form.NazwaSynonimyUprawa.label }}{{ form.NazwaSynonimyUprawa }}</div>
-                <div>{{ form.OpisUprawa.label }}{{ form.OpisUprawa }}</div>
-                <div>{{ form.UwagaUprawa.label }}{{ form.UwagaUprawa }}</div>  
-                <div>{{ form.ProduktRolny.label }}{{ form.ProduktRolny }}</div>
-                <div>{{ form.UprawaMiododajna.label }}{{ form.UprawaMiododajna }}</div>
-                <div>{{ form.UprawaEkologiczna.label }}{{ form.UprawaEkologiczna }}</div>
-                <div>{{ form.UprawaEnergetyczna.label }}{{ form.UprawaEnergetyczna }}</div>
-                <div>{{ form.UprawaOgrodnicza.label }}{{ form.UprawaOgrodnicza }}</div>
-                <div>{{ form.DostawyBezposrednie.label }}{{ form.DostawyBezposrednie }}</div>
-                <div>{{ form.RolniczyHandelDetaliczny.label }}{{ form.RolniczyHandelDetaliczny }}</div>
-                <div>{{ form.DzialSpecjalny.label }}{{ form.DzialSpecjalny }}</div>
-                <div>{{ form.OkrywaZimowa.label }}{{ form.OkrywaZimowa }}</div>
-                <div>{{ form.Warzywo.label }}{{ form.Warzywo }}</div>
-                <div>{{ form.WarzywoOwocKwiatZiolo.label }}{{ form.WarzywoOwocKwiatZiolo }}</div>
-                <div>
-                    <button formaction="/download-form">Pobierz ⬇️</button>
-                    <button formaction="/">Szukaj 🔍</button>
-                </div>
-            </form>
-        </div>   
+    <div class="col-span-full flex justify-center space-x-4 bg-gray-100 rounded-2xl inset-shadow-clay-gray p-2">
+        <button class="cursor-pointer inset-shadow-clay-blue bg-blue-200 backdrop-blur-xs rounded-2xl py-1 px-2">Uprawy Lista 📋</button>
+        <button class="cursor-pointer inset-shadow-clay-emerald bg-emerald-200 backdrop-blur-xs rounded-2xl py-1 px-2">Uprawy Klasyfikajca 🗂️</button>
+        <button class="cursor-pointer inset-shadow-clay-blue bg-blue-200 backdrop-blur-xs rounded-2xl py-1 px-2">Typy Upraw 🔢</button>
+        <button class="cursor-pointer inset-shadow-clay-blue bg-blue-200 backdrop-blur-xs rounded-2xl py-1 px-2">Rodzaje Upraw 🌾</button>
+        <button class="cursor-pointer inset-shadow-clay-blue bg-blue-200 backdrop-blur-xs rounded-2xl py-1 px-2">Wykorzystanie Produktów 🛒</button>
+        <button class="cursor-pointer inset-shadow-clay-blue bg-blue-200 backdrop-blur-xs rounded-2xl py-1 px-2">Zmianowanie Warzywo 🥕</button>
     </div>
-    <div class="flex flex-col gap-2 col-span-4 shrink-4 rounded-2xl ">
-        {% for kategoria in kategorie %}
-            <div class="flex flex-col px-2 pt-1 pb-2 gap-1 bg-gray-100 rounded-2xl inset-shadow-clay-gray">
-                <div class="text-lg cursor-pointer" onclick="toggleCollapse(this)">📁 {{ kategoria.Nazwa }}</div>
-                <div class="max-h-0 hidden flex flex-col gap-2">
-                    {% for gatunek in kategoria.Gatunki %}
-                        <div class="flex flex-col ml-4 px-2 py-1 inset-shadow-clay-gray-dark bg-gray-200 backdrop-blur-xs rounded-2xl">
-                            <div class="text-lg cursor-pointer" onclick="toggleCollapse(this)">📁 {{ gatunek.Nazwa }}</div>
-                            <div class="max-h-0 hidden">
-                                <div class="overflow-x-auto pb-1 my-2">
-                                    <table class="table-auto ml-4 text-nowrap border-collapse">
-                                        <tr class="">
-                                            <th class="text-left px-3 py-1">IdUprawy</th>
-                                            <th class="text-left px-3">Nazwa</th>
-                                            <th class="text-left px-3">NazwaLacinkska</th>
-                                            <th class="text-left px-3">Opis</th>
-                                            <th class="text-left px-3">IdUprawy</th>
-                                            <th class="text-left px-3">Nazwa</th>
-                                            <th class="text-left px-3">NazwaLacinkska</th>
-                                            <th class="text-left px-3">Opis</th>
-                                        </tr>
-                                        {% for uprawa in gatunek.Uprawy %}
-                                            <tr class="even:bg-gray-100">
-                                                <td class="px-3 py-1">{{ uprawa.IdUPrawy }}</td>
-                                                <td class="px-3">{{ uprawa.Nazwa }}</td>
-                                                <td class="px-3">{{ uprawa.NazwaLacinska }}</td>
-                                                <td class="px-3">{{ uprawa.Opis }}</td>
-                                                <td class="px-3">{{ uprawa.IdUPrawy }}</td>
-                                                <td class="px-3">{{ uprawa.Nazwa }}</td>
-                                                <td class="px-3">{{ uprawa.NazwaLacinska }}</td>
-                                                <td class="px-3">{{ uprawa.Opis }}</td>
-                                            </tr>
-                                        {% endfor %}
-                                    </table>
+    {# <div> #}
+        <!-- Search Panel -->
+        <div class="flex w-full flex-1 shrink-1 bg-gray-100 rounded-2xl inset-shadow-clay-gray">
+            <div class="py-2 pl-2">
+                <div class="">Search</div>
+                <form method="get">
+                    <div>{{ form.NazwaUprawa.label }}{{ form.NazwaUprawa }}</div>
+                    <div>{{ form.NazwaLacinskaUprawa.label }}{{ form.NazwaLacinskaUprawa }}</div>
+                    <div>{{ form.NazwaSynonimyUprawa.label }}{{ form.NazwaSynonimyUprawa }}</div>
+                    <div>{{ form.OpisUprawa.label }}{{ form.OpisUprawa }}</div>
+                    <div>{{ form.UwagaUprawa.label }}{{ form.UwagaUprawa }}</div>  
+                    <div>{{ form.ProduktRolny.label }}{{ form.ProduktRolny }}</div>
+                    <div>{{ form.UprawaMiododajna.label }}{{ form.UprawaMiododajna }}</div>
+                    <div>{{ form.UprawaEkologiczna.label }}{{ form.UprawaEkologiczna }}</div>
+                    <div>{{ form.UprawaEnergetyczna.label }}{{ form.UprawaEnergetyczna }}</div>
+                    <div>{{ form.UprawaOgrodnicza.label }}{{ form.UprawaOgrodnicza }}</div>
+                    <div>{{ form.DostawyBezposrednie.label }}{{ form.DostawyBezposrednie }}</div>
+                    <div>{{ form.RolniczyHandelDetaliczny.label }}{{ form.RolniczyHandelDetaliczny }}</div>
+                    <div>{{ form.DzialSpecjalny.label }}{{ form.DzialSpecjalny }}</div>
+                    <div>{{ form.OkrywaZimowa.label }}{{ form.OkrywaZimowa }}</div>
+                    <div>{{ form.Warzywo.label }}{{ form.Warzywo }}</div>
+                    <div>{{ form.WarzywoOwocKwiatZiolo.label }}{{ form.WarzywoOwocKwiatZiolo }}</div>
+                    <div>
+                        <button formaction="/download-form">Pobierz ⬇️</button>
+                        <button formaction="/">Szukaj 🔍</button>
+                    </div>
+                </form>
+            </div>   
+        </div>
+
+        <div class="flex flex-col gap-2 col-span-4 shrink-4 rounded-2xl">
+            {% for grupa in grupy %}
+                <div class="flex flex-col px-2 pt-1 pb-2 gap-1 bg-gray-100 rounded-2xl inset-shadow-clay-gray">
+                    <div class="cursor-pointer" onclick="toggleCollapse(this)">📁 {{ grupa.nazwa }}</div>
+                    <div class="hidden flex-col gap-2">
+                        {% for klasa in grupa.values %}
+                            <div class="flex flex-col ml-4 px-2 py-1 inset-shadow-clay-blue bg-blue-200 backdrop-blur-xs rounded-2xl">
+                                <div class="cursor-pointer" onclick="toggleCollapse(this)">📁 {{ klasa.nazwa }}</div>
+                                <div class="hidden flex-col gap-2">
+                                    {% for kategoria in klasa.values %}
+                                        <div class="ml-4 px-2 py-1 inset-shadow-clay-emerald bg-emerald-200 rounded-2xl">
+                                            <div class="cursor-pointer" onclick="toggleCollapse(this)">📁 {{ kategoria.nazwa }}</div>
+                                            <div class="hidden flex-col gap-2">
+                                                {% for podkategoria in kategoria.values %}
+                                                    <div class="flex flex-col ml-4 px-2 py-1 inset-shadow-clay-yellow bg-yellow-200 backdrop-blur-xs rounded-2xl">
+                                                        <div class="cursor-pointer" onclick="toggleCollapse(this)">📁 {{ podkategoria.nazwa }}</div>
+                                                        <div class="max-h-0 hidden">
+                                                            <div class="overflow-x-auto pb-1 my-2">
+                                                                <table class="table-auto ml-4 text-nowrap border-collapse">
+                                                                    <tr>
+                                                                        {% for header in headers %}
+                                                                            <th class="text-left px-3 py-1">{{ header }}</th>
+                                                                        {% endfor %}
+                                                                    </tr>
+                                                                    {% for u in podkategoria.values %}
+                                                                        <tr class="even:bg-gray-100">
+                                                                            {% for value in u %}
+                                                                                <td class="px-3">{{ value }}</td>
+                                                                            {% endfor %}
+                                                                        </tr>
+                                                                    {% endfor %}
+                                                                </table>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                {% endfor %}
+                                            </div>
+                                        </div>
+                                    {% endfor %}
                                 </div>
                             </div>
-                        </div>
-                    {% endfor %}
+                        {% endfor %}
+                    </div>
                 </div>
-            </div>
-        {% endfor %}
-    </div>
+            {% endfor %}
+        </div>
+    {# </div> #}
+ 
 </div>
+
+
 {% endblock %}
+
 
